@@ -50,21 +50,21 @@ struct Livros
 {
     int codigo;
     char nome[30];
-    int codigo_editora;
-    int codigo_autor;
-    int codigo_genero;
-    int codigo_emprestado;
+    char editora[20];
+    char autor[40];
+    char genero[15];
+    char emprestado[40];
     int qtde_emprestado;
     Data data_emprestimo;
 };
 
 // Funções (protótipos)
-void lerData();
+void lerData(Data *, int &);
 void lerPessoa(Pessoas *, int &);
 void lerEditora(Editoras *, int &);
 void lerAutor(Autores *, int &);
 void lerGenero(Generos *, int &);
-void lerLivro(Livros *, int &);
+void lerLivro(Livros *, Pessoas *, Editoras *, Autores *, Generos *, int &);
 
 void imprimirPessoa(Pessoas *, int);
 void imprimirEditora(Editoras *, int);
@@ -78,6 +78,11 @@ void menuAutores(Autores *, int &);
 void menuGeneros(Generos *, int &);
 void menuLivros(Livros *, int &);
 
+bool confPessoa(Pessoas *, int &, int &);
+bool confEditora(Editoras *, int &, int &);
+bool confAutor(Autores *, int &, int &);
+bool confGenero(Generos *, int &, int &);
+
 // Programa Principal
 
 int main()
@@ -87,10 +92,22 @@ int main()
 
     SetConsoleOutputCP(CPAGE_UTF8);
 
-    Pessoas teste[10];
+    Pessoas teste[20];
     int contP = 0;
-
-    menuPessoas(teste, contP);
+    int cod = 25;
+    int i = 0;
+    // menuPessoas(teste, contP);
+    /*
+    lerPessoa(teste,contP);
+    if(confPessoa(teste,cod, i)){
+        cout << "Passou como true";
+        cout << teste[i].codigo << endl;
+        cout << teste[i].nome << endl;
+        cout << teste[i].endereco << endl;
+    }
+    else
+        cout << "Entrou no else ;(";
+    */
 
     SetConsoleOutputCP(CPAGE_DEFAULT);
 }
@@ -266,6 +283,10 @@ void menuLivros()
 
 // Funções de leitura
 
+void lerData(Data *Date, int &contD)
+{
+}
+
 void lerPessoa(Pessoas *Pessoa, int &contP)
 {
     system("cls");
@@ -365,7 +386,82 @@ void lerGenero(Generos *Genero, int &contG)
     contG = i - 1;
 }
 
-void lerLivro(Livros *Livro, int &contL){}
+void lerLivro(Livros *Livro, Pessoas *Pessoa, Editoras *Editora, Autores *Autor, Generos *Genero, int &contL)
+{
+    system("cls");
+    int i = 0;
+    int codEdt, codAut, codPes, codGen, posEdt, posAut, posPes, posGen;
+    cout << "\t\t<==|Cadastro de Livros|==>\n\n";
+
+    for (int saida = 1; i < 20 && saida != 0; i++)
+    {
+        cout << "\n\tLivro " << (i + 1) << endl;
+
+        cout << "\nCódigo: ";
+        cin >> Livro[i].codigo;
+        cin.ignore();
+        if (Livro[i].codigo == 0)
+            saida = 0;
+        else
+        {
+            cout << "Nome: ";
+            gets(Livro[i].nome);
+
+            cout << "Código da editora: ";
+            cin >> codEdt;
+            if (confEditora(Editora, codEdt, posEdt))
+            {
+                strcpy(Livro[i].editora, Editora[posEdt].nome);
+            }
+            else
+            {
+                cout << "Editora não encontrada!\n";
+                system("pause");
+                break;
+            }
+
+            cout << "Código do Autor: ";
+            cin >> codAut;
+            if (confAutor(Autor, codAut, posAut))
+            {
+                strcpy(Livro[i].autor, Autor[posAut].nome);
+            }
+            else
+            {
+                cout << "Autor não encontrado!\n";
+                system("pause");
+                break;
+            }
+
+            cout << "Código do Gênero: ";
+            cin >> codGen;
+            if (confGenero(Genero, codGen, posGen))
+            {
+                strcpy(Livro[i].genero, Genero[posGen].nome);
+            }
+            else
+            {
+                cout << "Gênero não encontrado!\n";
+                system("pause");
+                break;
+            }
+
+            cout << "Código da Pessoa: ";
+            cin >> codPes;
+            if (confPessoa(Pessoa, codPes, posPes))
+            {
+                strcpy(Livro[i].emprestado, Pessoa[codPes].nome);
+            }
+            else
+            {
+                cout << "Pessoa não encontrada!\n";
+                system("pause");
+                break;
+            }
+        }
+    }
+    contL = i - 1;
+}
 
 // Funções de impressão
 
@@ -381,10 +477,100 @@ void imprimirPessoa(Pessoas *Pessoa, int contP)
     system("pause");
 }
 
-void imprimirEditora(Editoras *Editora, int contE){}
+void imprimirEditora(Editoras *Editora, int contE) {}
 
-void imprimirAutor(Autores *Autor, int contA){}
+void imprimirAutor(Autores *Autor, int contA) {}
 
-void imprimirGenero(Generos *Genero, int contG){}
+void imprimirGenero(Generos *Genero, int contG) {}
 
-void imprimirLivro(Livros *Livro, int contL){}
+void imprimirLivro(Livros *Livro, int contL) {}
+
+// Funções de confirmação
+
+bool confPessoa(Pessoas *Pessoa, int &cod, int &pos)
+{
+    int i = 0, f = 20;
+    int m = (i + f) / 2;
+
+    for (; f >= i && cod != Pessoa[m].codigo; m = (i + f) / 2)
+    {
+        if (cod > Pessoa[m].codigo)
+            i = m + 1;
+        else
+            f = m - 1;
+    }
+
+    if (cod == Pessoa[m].codigo)
+    {
+        pos = m;
+        return true;
+    }
+
+    return false;
+}
+
+bool confAutor(Autores *Autor, int &cod, int &pos)
+{
+    int i = 0, f = 20;
+    int m = (i + f) / 2;
+
+    for (; f >= i && cod != Autor[m].codigo; m = (i + f) / 2)
+    {
+        if (cod > Autor[m].codigo)
+            i = m + 1;
+        else
+            f = m - 1;
+    }
+
+    if (cod == Autor[m].codigo)
+    {
+        pos = m;
+        return true;
+    }
+
+    return false;
+}
+
+bool confGenero(Generos *Genero, int &cod, int &pos)
+{
+    int i = 0, f = 20;
+    int m = (i + f) / 2;
+
+    for (; f >= i && cod != Genero[m].codigo; m = (i + f) / 2)
+    {
+        if (cod > Genero[m].codigo)
+            i = m + 1;
+        else
+            f = m - 1;
+    }
+
+    if (cod == Genero[m].codigo)
+    {
+        pos = m;
+        return true;
+    }
+
+    return false;
+}
+
+bool confEditora(Editoras *Editora, int &cod, int &pos)
+{
+    int i = 0, f = 20;
+    int m = (i + f) / 2;
+
+    for (; f >= i && cod != Editora[m].codigo; m = (i + f) / 2)
+    {
+        if (cod > Editora[m].codigo)
+            i = m + 1;
+        else
+            f = m - 1;
+    }
+
+    if (cod == Editora[m].codigo)
+    {
+        pos = m;
+        return true;
+    }
+
+    return false;
+}
