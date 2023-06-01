@@ -83,6 +83,12 @@ bool confEditora(Editoras *, int &, int &);
 bool confAutor(Autores *, int &, int &);
 bool confGenero(Generos *, int &, int &);
 
+void atualizarPessoa(Pessoas *, Pessoas *, int &, Pessoas *, int &);
+void atualizarEditora(Editoras *, Editoras *, int &, Editoras *, int &);
+void atualizarAutor();
+void atualizarGenero();
+void autalizarLivro();
+
 // Programa Principal
 
 int main()
@@ -91,23 +97,6 @@ int main()
     UINT CPAGE_DEFAULT = GetConsoleOutputCP();
 
     SetConsoleOutputCP(CPAGE_UTF8);
-
-    Pessoas teste[20];
-    int contP = 0;
-    int cod = 25;
-    int i = 0;
-    // menuPessoas(teste, contP);
-    /*
-    lerPessoa(teste,contP);
-    if(confPessoa(teste,cod, i)){
-        cout << "Passou como true";
-        cout << teste[i].codigo << endl;
-        cout << teste[i].nome << endl;
-        cout << teste[i].endereco << endl;
-    }
-    else
-        cout << "Entrou no else ;(";
-    */
 
     SetConsoleOutputCP(CPAGE_DEFAULT);
 }
@@ -314,7 +303,7 @@ void lerPessoa(Pessoas *Pessoa, int &contP)
     contP = i - 1;
 }
 
-void lerEditora(Editoras *Editora, int contE)
+void lerEditora(Editoras *Editora, int &contE)
 {
     int i = 0;
 
@@ -573,4 +562,96 @@ bool confEditora(Editoras *Editora, int &cod, int &pos)
     }
 
     return false;
+}
+
+// Funções de inclusão
+
+void atualizarPessoa(Pessoas *T, Pessoas *S, int &contS, Pessoas *A, int &contA)
+{
+    system("cls");
+    int contT;
+    int i = 0, j = 0, k = 0;
+
+    cout << "\t\t<==|Atualizar de Pessoas|==>\n\n";
+
+    cout << "Faça a leitura dos clientes que deseja incluir na lista: \n";
+    lerPessoa(T, contT);
+
+    for (; i < contS && j < contT; k++)
+    {
+        if (S[i].codigo < T[j].codigo)
+        {
+            A[k].codigo = S[i].codigo;
+            strcpy(A[k].nome, S[i].nome);
+            strcpy(A[k].endereco, S[i].endereco);
+            i++;
+        }
+        else
+        {
+            A[k].codigo = T[j].codigo;
+            strcpy(A[k].nome, T[j].nome);
+            strcpy(A[k].endereco, T[j].endereco);
+            j++;
+        }
+    }
+    while (i < contS)
+    {
+        A[k].codigo = S[i].codigo;
+        strcpy(A[k].nome, S[i].nome);
+        strcpy(A[k].endereco, S[i].endereco);
+        i++;
+        k++;
+    }
+    while (j < contT)
+    {
+        A[k].codigo = T[j].codigo;
+        strcpy(A[k].nome, T[j].nome);
+        strcpy(A[k].endereco, T[j].endereco);
+        j++;
+        k++;
+    }
+    contA = k;
+}
+
+void atualizarEditora(Editoras *T, Editoras *S, int &contS, Editoras *A, int &contA)
+{
+    system("cls");
+    int contT;
+    int i = 0, j = 0, k = 0;
+
+    cout << "\t\t<==|Atualizar de Editoras|==>\n\n";
+
+    cout << "Faça a leitura das editoras que deseja incluir na lista: \n";
+    lerEditora(T, contT);
+
+    for (; i < contS && j < contT; k++)
+    {
+        if (S[i].codigo < T[j].codigo)
+        {
+            A[k].codigo = S[i].codigo;
+            strcpy(A[k].nome, S[i].nome);
+            i++;
+        }
+        else
+        {
+            A[k].codigo = T[j].codigo;
+            strcpy(A[k].nome, T[j].nome);
+            j++;
+        }
+    }
+    while (i < contS)
+    {
+        A[k].codigo = S[i].codigo;
+        strcpy(A[k].nome, S[i].nome);
+        i++;
+        k++;
+    }
+    while (j < contT)
+    {
+        A[k].codigo = T[j].codigo;
+        strcpy(A[k].nome, T[j].nome);
+        j++;
+        k++;
+    }
+    contA = k;
 }
