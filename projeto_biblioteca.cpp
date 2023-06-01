@@ -50,10 +50,14 @@ struct Livros
 {
     int codigo;
     char nome[25];
-    int editora;
-    int autor;
-    int genero;
-    int emprestado;
+    int codEditora;
+    char editora[25];
+    int codAutor;
+    char autor[40];
+    int codGenero;
+    char genero[15];
+    int codPessoa;
+    char pessoa[40];
     int qtde_emprestado;
     Data data_ultemprestimo;
 };
@@ -64,13 +68,13 @@ void lerPessoa(Pessoas *, int &);
 void lerEditora(Editoras *, int &);
 void lerAutor(Autores *, int &);
 void lerGenero(Generos *, int &);
-void lerLivro(Livros *, int &, Pessoas *, Editoras *, Autores *, Generos *, Data &);
+void lerLivro(Livros *, int &, Editoras *, Autores *, Generos *, Data &);
 
 void imprimirPessoa(Pessoas *, int);
 void imprimirEditora(Editoras *, int);
 void imprimirAutor(Autores *, int);
 void imprimirGenero(Generos *, int);
-void imprimirLivro(Livros *, int, Pessoas *, Editoras *, Autores *, Generos *);
+void imprimirLivro(Livros *, int);
 
 void menuPessoas(Pessoas *, int &);
 void menuEditoras(Editoras *, int &);
@@ -87,7 +91,7 @@ void atualizarPessoa(Pessoas *, Pessoas *, int &, Pessoas *, int &);
 void atualizarEditora(Editoras *, Editoras *, int &, Editoras *, int &);
 void atualizarAutor(Autores *, Autores *, int &, Autores *, int &);
 void atualizarGenero(Generos *, Generos *, int &, Generos *, int &);
-void autalizarLivro(Livros *, Livros *, int &, Livros *, int &, Pessoas *, Editoras *, Autores *, Generos *, Data &);
+void autalizarLivro(Livros *, Livros *, int &, Livros *, int &, Editoras *, Autores *, Generos *, Data &);
 
 // Programa Principal
 
@@ -405,11 +409,11 @@ void lerGenero(Generos *Genero, int &contG)
     contG = i - 1;
 }
 
-void lerLivro(Livros *Livro, int &contL, Pessoas *Pessoa, Editoras *Editora, Autores *Autor, Generos *Genero, Data &Date)
+void lerLivro(Livros *Livro, int &contL, Editoras *Editora, Autores *Autor, Generos *Genero, Data &Date)
 {
     system("cls");
     int i = 0;
-    int codEdt, codAut, codPes, codGen, posEdt, posAut, posPes, posGen;
+    int codEdt, codAut, codGen, posEdt, posAut, posGen;
     cout << "\t\t<==|Cadastro de Livros|==>\n\n";
 
     for (int saida = 1; i < 20 && saida != 0; i++)
@@ -433,8 +437,9 @@ void lerLivro(Livros *Livro, int &contL, Pessoas *Pessoa, Editoras *Editora, Aut
             cin >> codEdt;
             if (confEditora(Editora, codEdt, posEdt))
             {
-                Livro[i].editora = Editora[posEdt].codigo;
-                cout << "Editora: " << Editora[posEdt].nome << endl;
+                Livro[i].codEditora = Editora[posEdt].codigo;
+                strcpy(Livro[i].editora, Editora[posEdt].nome);
+                cout << "Editora: " << Livro[i].editora << endl;
             }
             else
             {
@@ -447,8 +452,9 @@ void lerLivro(Livros *Livro, int &contL, Pessoas *Pessoa, Editoras *Editora, Aut
             cin >> codAut;
             if (confAutor(Autor, codAut, posAut))
             {
-                Livro[i].autor = Autor[posAut].codigo;
-                cout << "Autor: " << Autor[posAut].nome << endl;
+                Livro[i].codAutor = Autor[posAut].codigo;
+                strcpy(Livro[i].autor, Autor[posAut].nome);
+                cout << "Autor: " << Livro[i].autor << endl;
             }
             else
             {
@@ -461,8 +467,9 @@ void lerLivro(Livros *Livro, int &contL, Pessoas *Pessoa, Editoras *Editora, Aut
             cin >> codGen;
             if (confGenero(Genero, codGen, posGen))
             {
-                Livro[i].genero = Genero[posGen].codigo;
-                cout << "Gênero: " << Genero[posGen].nome << endl;
+                Livro[i].codGenero = Genero[posGen].codigo;
+                strcpy(Livro[i].genero, Genero[posGen].nome);
+                cout << "Gênero: " << Livro[i].genero << endl;
             }
             else
             {
@@ -471,19 +478,8 @@ void lerLivro(Livros *Livro, int &contL, Pessoas *Pessoa, Editoras *Editora, Aut
                 break;
             }
 
-            /*cout << "Código da Pessoa: ";
-            cin >> codPes;
-            if (confPessoa(Pessoa, codPes, posPes))
-            {
-                strcpy(Livro[i].emprestado, Pessoa[codPes].nome);
-            }
-            else
-            {
-                cout << "Pessoa não encontrada!\n";
-                system("pause");
-                break;
-            }*/
-            Livro[i].emprestado = 0;
+            Livro[i].codPessoa = 0;
+            strcpy(Livro[i].pessoa, " ");
             Livro[i].qtde_emprestado = 0;
             Livro[i].data_ultemprestimo = Date;
         }
@@ -546,32 +542,27 @@ void imprimirGenero(Generos *Genero, int contG)
     system("pause");
 }
 
-void imprimirLivro(Livros *Livro, int contL, Pessoas *Pessoa, Editoras *Editora, Autores *Autor, Generos *Genero)
+void imprimirLivro(Livros *Livro, int contL)
 {
     system("cls");
-    int posEdt, posAut, posPes, posGen;
     cout << "\n\t<==|Lista - Livros|==>\n";
 
     for (int i = 0; i < contL; i++)
     {
-        confEditora(Editora,Livro[i].editora,posEdt);
-        confAutor(Autor,Livro[i].autor,posAut);
-        confGenero(Genero, Livro[i].genero, posGen);
-        confPessoa(Pessoa,Livro[i].emprestado,posPes);
 
         cout << "\n-> Código: " << Livro[i].codigo << endl;
         cout << "\t-> Livro: " << Livro[i].nome << endl;
-        cout << "\t-> Código Editora: " << Livro[i].editora << endl;
-        cout << "\t\t-> Editora: " << Editora[posEdt].nome << endl;
-        cout << "\t-> Código Autor: " << Livro[i].autor << endl;
-        cout << "\t\t-> Autor: " << Autor[posAut].nome << endl;
-        cout << "\t-> Código Gênero: " << Livro[i].genero << endl;
-        cout << "\t\t-> Gênero: " << Genero[posGen].nome << endl;
-        cout << "\t-> Emprestado para: " << Pessoa[posPes].nome << endl;
+        cout << "\t-> Código Editora: " << Livro[i].codEditora << endl;
+        cout << "\t\t-> Editora: " << Livro[i].editora << endl;
+        cout << "\t-> Código Autor: " << Livro[i].codAutor << endl;
+        cout << "\t\t-> Autor: " << Livro[i].autor << endl;
+        cout << "\t-> Código Gênero: " << Livro[i].codGenero << endl;
+        cout << "\t\t-> Gênero: " << Livro[i].genero << endl;
+        cout << "\t-> Emprestado para: " << Livro[i].pessoa << endl;
         cout << "\t-> Foi emprestado " << Livro[i].qtde_emprestado << " vezes\n";
         cout << "\t-> Data de último emprestimo: " << Livro[i].data_ultemprestimo.dia << "/"
-                                                    << Livro[i].data_ultemprestimo.mes << "/" 
-                                                    << Livro[i].data_ultemprestimo.ano << endl;
+             << Livro[i].data_ultemprestimo.mes << "/"
+             << Livro[i].data_ultemprestimo.ano << endl;
     }
     system("pause");
 }
@@ -844,7 +835,7 @@ void atualizarGenero(Generos *T, Generos *S, int &contS, Generos *A, int &contA)
     contA = k;
 }
 
-void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Pessoas *Pessoa, Editoras *Editora, Autores *Autor, Generos *Genero, Data &Date)
+void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Editoras *Editora, Autores *Autor, Generos *Genero, Data &Date)
 {
     system("cls");
     int contT;
@@ -853,7 +844,7 @@ void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Pes
     cout << "\t\t<==|Atualizar lista de Livros|==>\n\n";
 
     cout << "Faça a leitura das livros que deseja incluir na lista: \n";
-    lerLivro(T, contT, Pessoa, Editora, Autor, Genero, Date);
+    lerLivro(T, contT, Editora, Autor, Genero, Date);
 
     for (; i < contS && j < contT; k++)
     {
@@ -861,10 +852,14 @@ void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Pes
         {
             A[k].codigo = S[i].codigo;
             strcpy(A[k].nome, S[i].nome);
-            A[k].editora = S[i].editora;
-            A[k].autor = S[i].autor;
-            A[k].genero = S[i].genero;
-            A[k].emprestado = S[i].emprestado;
+            A[k].codEditora = S[i].codEditora;
+            strcpy(A[k].editora, S[i].editora);
+            A[k].codAutor = S[i].codAutor;
+            strcpy(A[k].autor, S[i].autor);
+            A[k].codGenero = S[i].codGenero;
+            strcpy(A[k].genero, S[i].genero);
+            A[k].codPessoa = S[i].codPessoa;
+            strcpy(A[k].pessoa, S[i].pessoa);
             A[k].qtde_emprestado = S[i].qtde_emprestado;
             A[k].data_ultemprestimo = S[i].data_ultemprestimo;
             i++;
@@ -873,10 +868,14 @@ void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Pes
         {
             A[k].codigo = T[j].codigo;
             strcpy(A[k].nome, T[j].nome);
-            A[k].editora = T[j].editora;
-            A[k].autor = T[j].autor;
-            A[k].genero = T[j].genero;
-            A[k].emprestado = T[j].emprestado;
+            A[k].codEditora = T[j].codEditora;
+            strcpy(A[k].editora, T[j].editora);
+            A[k].codAutor = T[j].codAutor;
+            strcpy(A[k].autor, T[j].autor);
+            A[k].codGenero = T[j].codGenero;
+            strcpy(A[k].genero, T[j].genero);
+            A[k].codPessoa = T[j].codPessoa;
+            strcpy(A[k].pessoa, T[j].pessoa);
             A[k].qtde_emprestado = T[j].qtde_emprestado;
             A[k].data_ultemprestimo = T[j].data_ultemprestimo;
             j++;
@@ -886,10 +885,14 @@ void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Pes
     {
         A[k].codigo = S[i].codigo;
         strcpy(A[k].nome, S[i].nome);
-        A[k].editora = S[i].editora;
-        A[k].autor = S[i].autor;
-        A[k].genero = S[i].genero;
-        A[k].emprestado = S[i].emprestado;
+        A[k].codEditora = S[i].codEditora;
+        strcpy(A[k].editora, S[i].editora);
+        A[k].codAutor = S[i].codAutor;
+        strcpy(A[k].autor, S[i].autor);
+        A[k].codGenero = S[i].codGenero;
+        strcpy(A[k].genero, S[i].genero);
+        A[k].codPessoa = S[i].codPessoa;
+        strcpy(A[k].pessoa, S[i].pessoa);
         A[k].qtde_emprestado = S[i].qtde_emprestado;
         A[k].data_ultemprestimo = S[i].data_ultemprestimo;
         i++;
@@ -899,10 +902,14 @@ void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Pes
     {
         A[k].codigo = T[j].codigo;
         strcpy(A[k].nome, T[j].nome);
-        A[k].editora = T[j].editora;
-        A[k].autor = T[j].autor;
-        A[k].genero = T[j].genero;
-        A[k].emprestado = T[j].emprestado;
+        A[k].codEditora = T[j].codEditora;
+        strcpy(A[k].editora, T[j].editora);
+        A[k].codAutor = T[j].codAutor;
+        strcpy(A[k].autor, T[j].autor);
+        A[k].codGenero = T[j].codGenero;
+        strcpy(A[k].genero, T[j].genero);
+        A[k].codPessoa = T[j].codPessoa;
+        strcpy(A[k].pessoa, T[j].pessoa);
         A[k].qtde_emprestado = T[j].qtde_emprestado;
         A[k].data_ultemprestimo = T[j].data_ultemprestimo;
         j++;
