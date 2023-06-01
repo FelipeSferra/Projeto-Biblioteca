@@ -87,7 +87,7 @@ void atualizarPessoa(Pessoas *, Pessoas *, int &, Pessoas *, int &);
 void atualizarEditora(Editoras *, Editoras *, int &, Editoras *, int &);
 void atualizarAutor(Autores *, Autores *, int &, Autores *, int &);
 void atualizarGenero(Generos *, Generos *, int &, Generos *, int &);
-void autalizarLivro(Livros *, Livros *, int &, Livros *, int &, Pessoas *, Editoras *, Autores *, Generos *);
+void autalizarLivro(Livros *, Livros *, int &, Livros *, int &, Pessoas *, Editoras *, Autores *, Generos *, Data &);
 
 // Programa Principal
 
@@ -279,7 +279,7 @@ void lerData(Data &Date)
     cout << "Dia: ";
     cin >> Date.dia;
     // Parametros dia
-    
+
     cout << "Mês: ";
     cin >> Date.mes;
     // Parametros mes
@@ -755,7 +755,7 @@ void atualizarGenero(Generos *T, Generos *S, int &contS, Generos *A, int &contA)
     contA = k;
 }
 
-void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Pessoas *Pessoa, Editoras *Editora, Autores *Autor, Generos *Genero)
+void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Pessoas *Pessoa, Editoras *Editora, Autores *Autor, Generos *Genero, Data &Date)
 {
     system("cls");
     int contT;
@@ -764,7 +764,7 @@ void atualizarLivro(Livros *T, Livros *S, int &contS, Livros *A, int &contA, Pes
     cout << "\t\t<==|Atualizar lista de Livros|==>\n\n";
 
     cout << "Faça a leitura das livros que deseja incluir na lista: \n";
-    lerLivro(T, contT, Pessoa, Editora, Autor, Genero);
+    lerLivro(T, contT, Pessoa, Editora, Autor, Genero,Date);
 
     for (; i < contS && j < contT; k++)
     {
