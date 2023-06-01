@@ -569,7 +569,9 @@ void imprimirLivro(Livros *Livro, int contL, Pessoas *Pessoa, Editoras *Editora,
         cout << "\t\t-> Gênero: " << Genero[posGen].nome << endl;
         cout << "\t-> Emprestado para: " << Pessoa[posPes].nome << endl;
         cout << "\t-> Foi emprestado " << Livro[i].qtde_emprestado << " vezes\n";
-        cout << "\t-> Data de último emprestimo: " << Livro[i].data_ultemprestimo << endl;
+        cout << "\t-> Data de último emprestimo: " << Livro[i].data_ultemprestimo.dia << "/"
+                                                    << Livro[i].data_ultemprestimo.mes << "/" 
+                                                    << Livro[i].data_ultemprestimo.ano << endl;
     }
     system("pause");
 }
