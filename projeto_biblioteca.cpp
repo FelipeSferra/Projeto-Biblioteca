@@ -70,7 +70,7 @@ void lerPessoa(Pessoas *, int &);
 void lerEditora(Editoras *, int &);
 void lerAutor(Autores *, int &);
 void lerGenero(Generos *, int &);
-void lerLivro(Livros *, int &, Editoras *, Autores *, Generos *, Data *);
+void lerLivro(Livros *, int &, Editoras *, Autores *, Generos *, Data *, int, int, int, int);
 
 bool DataValida(int, int, int);
 
@@ -84,12 +84,12 @@ void menuPessoas(Pessoas *, int &, Pessoas *, int &, Pessoas *, int &);
 void menuEditoras(Editoras *, int &, Editoras *, int &, Editoras *, int &);
 void menuAutores(Autores *, int &, Autores *, int &, Autores *, int &);
 void menuGeneros(Generos *, int &, Generos *, int &, Generos *, int &);
-void menuLivros(Livros *, int &, Livros *, int &, Livros *, int &, Editoras *, Autores *, Generos *, Pessoas *, Data *);
+void menuLivros(Livros *, int &, Livros *, int &, Livros *, int &, Editoras *, Autores *, Generos *, Pessoas *, Data *, int, int, int, int);
 
-bool confPessoa(Pessoas *, int &, int &);
-bool confEditora(Editoras *, int &, int &);
-bool confAutor(Autores *, int &, int &);
-bool confGenero(Generos *, int &, int &);
+bool confPessoa(Pessoas *, int &, int &, int);
+bool confEditora(Editoras *, int &, int &, int);
+bool confAutor(Autores *, int &, int &, int);
+bool confGenero(Generos *, int &, int &, int);
 
 void atualizarPessoa(Pessoas *, int &, Pessoas *, int &, Pessoas *, int &);
 void atualizarEditora(Editoras *, int &, Editoras *, int &, Editoras *, int &);
@@ -97,9 +97,9 @@ void atualizarAutor(Autores *, int &, Autores *, int &, Autores *, int &);
 void atualizarGenero(Generos *, int &, Generos *, int &, Generos *, int &);
 void atualizarLivro(Livros *, int &, Livros *, int &, Livros *, int &, Editoras *, Autores *, Generos *, Data *);
 
-void bscLivros(Livros *, int &, int &);
+void bscLivros(Livros *, int &, int &, int);
 
-void emprestimoLivros(Livros *, int &, Pessoas *);
+void emprestimoLivros(Livros *, int &, Pessoas *, int);
 void devolucaoLivros(Livros *, int &);
 
 void livrosEmprestados(Livros *, int &);
@@ -110,15 +110,14 @@ char *calcDataEntrega(Data);
 
 int calcDiasAtraso(Data, Data);
 
+
 // Programa Principal
 
 int main()
 {
-    system("cls");
-    
     UINT CPAGE_UTF8 = 65001;
     UINT CPAGE_DEFAULT = GetConsoleOutputCP();
-    
+
     SetConsoleOutputCP(CPAGE_UTF8);
 
     // variaveis
@@ -143,6 +142,7 @@ int main()
 
     while (op != '0')
     {
+        system("cls");
         cout << "\n\t<==|Menu - Principal|==>\n\n";
 
         cout << "[1] - Menu - Pessoas\n";
@@ -170,10 +170,14 @@ int main()
             menuGeneros(GeneroS, contGS, GeneroT, contGT, GeneroA, contGA);
             break;
         case '5':
-            menuLivros(LivroS, contLS, LivroT, contLT, LivroA, contLA,EditoraA, AutorA, GeneroA, PessoaA, Datas);
+            menuLivros(LivroS, contLS, LivroT, contLT, LivroA, contLA, EditoraA, AutorA, GeneroA, PessoaA, Datas, contEA, contAA, contGA, contPA);
+            break;
+        case '0':
+            system("cls");
+            cout << "\n\tObrigado por usar o programa!\n\n";
             break;
         default:
-            cout << "\n\tObrigado por usar o programa!\n\n";
+            cout << "Opção inválida!\n";
             break;
         }
     }
@@ -185,12 +189,11 @@ int main()
 
 void menuPessoas(Pessoas *PessoaS, int &contPS, Pessoas *PessoaT, int &contPT, Pessoas *PessoaA, int &contPA)
 {
-    system("cls");
-
     char op = 'X';
 
     while (op != '0')
     {
+        system("cls");
         cout << "\n\t<==|Menu - Pessoas|==>\n\n";
 
         cout << "[1] - Cadastrar Pessoa\n";
@@ -212,8 +215,10 @@ void menuPessoas(Pessoas *PessoaS, int &contPS, Pessoas *PessoaT, int &contPT, P
         case '3':
             imprimirPessoa(PessoaA, contPA);
             break;
-
+        case '0':
+            break;
         default:
+            cout << "Opção inválida!\n";
             break;
         }
     }
@@ -221,12 +226,11 @@ void menuPessoas(Pessoas *PessoaS, int &contPS, Pessoas *PessoaT, int &contPT, P
 
 void menuEditoras(Editoras *EditoraS, int &contES, Editoras *EditoraT, int &contET, Editoras *EditoraA, int &contEA)
 {
-    system("cls");
-
     char op = 'X';
 
     while (op != '0')
     {
+        system("cls");
         cout << "\n\t<==|Menu - Editoras|==>\n\n";
 
         cout << "[1] - Cadastrar Editora\n";
@@ -243,26 +247,27 @@ void menuEditoras(Editoras *EditoraS, int &contES, Editoras *EditoraT, int &cont
             lerEditora(EditoraS, contES);
             break;
         case '2':
-            atualizarEditora(EditoraT,contET, EditoraS, contES, EditoraA, contEA);
+            atualizarEditora(EditoraT, contET, EditoraS, contES, EditoraA, contEA);
             break;
         case '3':
             imprimirEditora(EditoraA, contEA);
             break;
-
+        case '0':
+            break;
         default:
+            cout << "Opção inválida!\n";
             break;
         }
     }
 }
 
-void menuAutores(Autores *AutorS, int &contAS, Autores *AutorT ,int &contAT, Autores *AutorA, int &contAA)
+void menuAutores(Autores *AutorS, int &contAS, Autores *AutorT, int &contAT, Autores *AutorA, int &contAA)
 {
-    system("cls");
-
     char op = 'X';
 
     while (op != '0')
     {
+        system("cls");
         cout << "\n\t<==|Menu - Autores|==>\n\n";
 
         cout << "[1] - Cadastrar Autores\n";
@@ -279,13 +284,15 @@ void menuAutores(Autores *AutorS, int &contAS, Autores *AutorT ,int &contAT, Aut
             lerAutor(AutorS, contAS);
             break;
         case '2':
-            atualizarAutor(AutorT,contAT, AutorS, contAS, AutorA, contAA);
+            atualizarAutor(AutorT, contAT, AutorS, contAS, AutorA, contAA);
             break;
         case '3':
             imprimirAutor(AutorA, contAA);
             break;
-
+        case '0':
+            break;
         default:
+            cout << "Opção inválida!\n";
             break;
         }
     }
@@ -293,12 +300,11 @@ void menuAutores(Autores *AutorS, int &contAS, Autores *AutorT ,int &contAT, Aut
 
 void menuGeneros(Generos *GeneroS, int &contGS, Generos *GeneroT, int &contGT, Generos *GeneroA, int &contGA)
 {
-    system("cls");
-
     char op = 'X';
 
     while (op != '0')
     {
+        system("cls");
         cout << "\n\t<==|Menu - Gêneros|==>\n\n";
 
         cout << "[1] - Cadastrar Gêneros\n";
@@ -312,29 +318,30 @@ void menuGeneros(Generos *GeneroS, int &contGS, Generos *GeneroT, int &contGT, G
         switch (op)
         {
         case '1':
-            lerGenero(GeneroS,contGS);
+            lerGenero(GeneroS, contGS);
             break;
         case '2':
-            atualizarGenero(GeneroT, contGT, GeneroS,contGS, GeneroA, contGA);
+            atualizarGenero(GeneroT, contGT, GeneroS, contGS, GeneroA, contGA);
             break;
         case '3':
             imprimirGenero(GeneroA, contGA);
             break;
-
+        case '0':
+            break;
         default:
+            cout << "Opção inválida!\n";
             break;
         }
     }
 }
 
-void menuLivros(Livros *LivroS, int &contLS, Livros *LivroT, int &contLT, Livros *LivroA, int &contLA, Editoras *EditoraA, Autores *AutorA, Generos *GeneroA, Pessoas *PessoaA,Data *Date)
+void menuLivros(Livros *LivroS, int &contLS, Livros *LivroT, int &contLT, Livros *LivroA, int &contLA, Editoras *EditoraA, Autores *AutorA, Generos *GeneroA, Pessoas *PessoaA, Data *Date, int contEA, int contAA, int contGA, int contPA)
 {
-    system("cls");
-
     char op = 'X';
 
     while (op != '0')
     {
+        system("cls");
         cout << "\n\t<==|Menu - Livros|==>\n\n";
 
         cout << "[1] - Cadastrar Livros\n";
@@ -352,13 +359,13 @@ void menuLivros(Livros *LivroS, int &contLS, Livros *LivroT, int &contLT, Livros
         switch (op)
         {
         case '1':
-            lerLivro(LivroS, contLS, EditoraA, AutorA, GeneroA, Date);
+            lerLivro(LivroS, contLS, EditoraA, AutorA, GeneroA, Date, contEA, contAA, contGA, contPA);
             break;
         case '2':
             atualizarLivro(LivroT, contLT, LivroS, contLS, LivroA, contLA, EditoraA, AutorA, GeneroA, Date);
             break;
         case '3':
-            emprestimoLivros(LivroA, contLA, PessoaA);
+            emprestimoLivros(LivroA, contLA, PessoaA, contPA);
             break;
         case '4':
             devolucaoLivros(LivroA, contLA);
@@ -372,8 +379,10 @@ void menuLivros(Livros *LivroS, int &contLS, Livros *LivroT, int &contLT, Livros
         case '7':
             livrosAtrasados(LivroA, contLA);
             break;
-
+        case '0':
+            break;
         default:
+            cout << "Opção inválida!\n";
             break;
         }
     }
@@ -424,6 +433,7 @@ void lerPessoa(Pessoas *Pessoa, int &contP)
 
 void lerEditora(Editoras *Editora, int &contE)
 {
+    system("cls");
     int i = 0;
 
     cout << "\t\t<==|Cadastro de Editoras|==>\n\n";
@@ -448,6 +458,7 @@ void lerEditora(Editoras *Editora, int &contE)
 
 void lerAutor(Autores *Autor, int &contA)
 {
+    system("cls");
     int i = 0;
 
     cout << "\t\t<==|Cadastro de Autores|==>\n\n";
@@ -472,6 +483,7 @@ void lerAutor(Autores *Autor, int &contA)
 
 void lerGenero(Generos *Genero, int &contG)
 {
+    system("cls");
     int i = 0;
 
     cout << "\t\t<==|Cadastro de Gêneros|==>\n\n";
@@ -494,11 +506,12 @@ void lerGenero(Generos *Genero, int &contG)
     contG = i - 1;
 }
 
-void lerLivro(Livros *Livro, int &contL, Editoras *Editora, Autores *Autor, Generos *Genero, Data *Date)
+void lerLivro(Livros *Livro, int &contL, Editoras *EditoraA, Autores *AutorA, Generos *GeneroA, Data *Date,int contEA = 0, int contAA = 0, int contGA = 0, int contPA = 0)
 {
     system("cls");
     int i = 0;
     int codEdt, codAut, codGen, posEdt, posAut, posGen;
+
     cout << "\t\t<==|Cadastro de Livros|==>\n\n";
 
     for (int saida = 1; i < 20 && saida != 0; i++)
@@ -519,11 +532,14 @@ void lerLivro(Livros *Livro, int &contL, Editoras *Editora, Autores *Autor, Gene
             gets(Livro[i].nome);
 
             cout << "Código da editora: ";
+
             cin >> codEdt;
-            if (confEditora(Editora, codEdt, posEdt))
+            cin.ignore();
+
+            if (confEditora(EditoraA, codEdt, posEdt, contEA))
             {
-                Livro[i].codEditora = Editora[posEdt].codigo;
-                strcpy(Livro[i].editora, Editora[posEdt].nome);
+                Livro[i].codEditora = EditoraA[posEdt].codigo;
+                strcpy(Livro[i].editora, EditoraA[posEdt].nome);
                 cout << "Editora: " << Livro[i].editora << endl;
             }
             else
@@ -535,10 +551,11 @@ void lerLivro(Livros *Livro, int &contL, Editoras *Editora, Autores *Autor, Gene
 
             cout << "Código do Autor: ";
             cin >> codAut;
-            if (confAutor(Autor, codAut, posAut))
+            cin.ignore();
+            if (confAutor(AutorA, codAut, posAut, contAA))
             {
-                Livro[i].codAutor = Autor[posAut].codigo;
-                strcpy(Livro[i].autor, Autor[posAut].nome);
+                Livro[i].codAutor = AutorA[posAut].codigo;
+                strcpy(Livro[i].autor, AutorA[posAut].nome);
                 cout << "Autor: " << Livro[i].autor << endl;
             }
             else
@@ -550,10 +567,11 @@ void lerLivro(Livros *Livro, int &contL, Editoras *Editora, Autores *Autor, Gene
 
             cout << "Código do Gênero: ";
             cin >> codGen;
-            if (confGenero(Genero, codGen, posGen))
+            cin.ignore();
+            if (confGenero(GeneroA, codGen, posGen,contGA))
             {
-                Livro[i].codGenero = Genero[posGen].codigo;
-                strcpy(Livro[i].genero, Genero[posGen].nome);
+                Livro[i].codGenero = GeneroA[posGen].codigo;
+                strcpy(Livro[i].genero, GeneroA[posGen].nome);
                 cout << "Gênero: " << Livro[i].genero << endl;
             }
             else
@@ -687,9 +705,9 @@ void imprimirLivro(Livros *Livro, int i)
 
 // Funções de confirmação
 
-bool confPessoa(Pessoas *Pessoa, int &cod, int &pos)
+bool confPessoa(Pessoas *Pessoa, int &cod, int &pos ,int cont)
 {
-    int i = 0, f = 20;
+    int i = 0, f = cont;
     int m = (i + f) / 2;
 
     for (; f >= i && cod != Pessoa[m].codigo; m = (i + f) / 2)
@@ -709,9 +727,9 @@ bool confPessoa(Pessoas *Pessoa, int &cod, int &pos)
     return false;
 }
 
-bool confAutor(Autores *Autor, int &cod, int &pos)
+bool confAutor(Autores *Autor, int &cod, int &pos, int cont)
 {
-    int i = 0, f = 20;
+    int i = 0, f = cont;
     int m = (i + f) / 2;
 
     for (; f >= i && cod != Autor[m].codigo; m = (i + f) / 2)
@@ -731,9 +749,9 @@ bool confAutor(Autores *Autor, int &cod, int &pos)
     return false;
 }
 
-bool confGenero(Generos *Genero, int &cod, int &pos)
+bool confGenero(Generos *Genero, int &cod, int &pos, int cont)
 {
-    int i = 0, f = 20;
+    int i = 0, f = cont;
     int m = (i + f) / 2;
 
     for (; f >= i && cod != Genero[m].codigo; m = (i + f) / 2)
@@ -753,9 +771,9 @@ bool confGenero(Generos *Genero, int &cod, int &pos)
     return false;
 }
 
-bool confEditora(Editoras *Editora, int &cod, int &pos)
+bool confEditora(Editoras *Editora, int &cod, int &pos, int cont)
 {
-    int i = 0, f = 20;
+    int i = 0, f = cont;
     int m = (i + f) / 2;
 
     for (; f >= i && cod != Editora[m].codigo; m = (i + f) / 2)
@@ -771,7 +789,6 @@ bool confEditora(Editoras *Editora, int &cod, int &pos)
         pos = m;
         return true;
     }
-
     return false;
 }
 
@@ -1038,9 +1055,9 @@ void atualizarLivro(Livros *T, int &contT, Livros *S, int &contS, Livros *A, int
 
 // Funções relacionadas ao emprestimo e devolução de livros
 
-void bscLivros(Livros *Livro, int &cod, int &pos)
+void bscLivros(Livros *Livro, int &cod, int &pos, int cont)
 {
-    int i = 0, f = 20;
+    int i = 0, f = cont;
     int m = (i + f) / 2;
 
     for (; f >= i && cod != Livro[m].codigo; m = (i + f) / 2)
@@ -1061,7 +1078,7 @@ void bscLivros(Livros *Livro, int &cod, int &pos)
     }
 }
 
-void emprestimoLivros(Livros *Livro, int &contL, Pessoas *Pessoa)
+void emprestimoLivros(Livros *Livro, int &contL, Pessoas *Pessoa, int contPA)
 {
     system("cls");
     int codL, codPes, posL, posPes;
@@ -1071,20 +1088,20 @@ void emprestimoLivros(Livros *Livro, int &contL, Pessoas *Pessoa)
     cout << "Digite o código do livro que deseja: ";
     cin >> codL;
     cin.ignore();
-    bscLivros(Livro, codL, posL);
+    bscLivros(Livro, codL, posL, contL);
     imprimirLivro(Livro, posL);
 
     if (Livro[posL].codPessoa == 0)
     {
         cout << "Digite o código da pessoa que irá receber o livro: ";
         cin >> codPes;
-        if (confPessoa(Pessoa, codPes, posPes))
+        if (confPessoa(Pessoa, codPes, posPes, contPA))
         {
             cout << "Nome: " << Pessoa[posPes].nome << endl;
             Livro[posL].codPessoa = Pessoa[posPes].codigo;
             strcpy(Livro[posL].pessoa, Pessoa[posPes].nome);
             Livro[posL].qtde_emprestado++;
-            cout << "Digite a data de emprestimo: ";
+            cout << "Digite a data de emprestimo: \n";
             lerData(Livro[posL].data_ultemprestimo);
         }
         else
@@ -1110,7 +1127,7 @@ void devolucaoLivros(Livros *Livro, int &contL)
     cout << "Digite o código do livro que deseja devolver: ";
     cin >> codL;
     cin.ignore();
-    bscLivros(Livro, codL, posL);
+    bscLivros(Livro, codL, posL, contL);
     cout << "Título: " << Livro[posL].nome << endl;
     cout << "Editora: " << Livro[posL].editora << endl;
     cout << "Autor: " << Livro[posL].autor << endl;
@@ -1262,6 +1279,7 @@ void livrosAtrasados(Livros *Livro, int &contL)
             system("pause");
         }
     }
+    system("pause");
 }
 
 int calcDiasAtraso(Data data_atual, Data data_emprestimo)
@@ -1282,3 +1300,4 @@ int calcDiasAtraso(Data data_atual, Data data_emprestimo)
     int diasAtraso = static_cast<int>(diferenca / (60 * 60 * 24)); // (60 seg * 60 min * 24h = seg em um dia)
     return diasAtraso;
 }
+
