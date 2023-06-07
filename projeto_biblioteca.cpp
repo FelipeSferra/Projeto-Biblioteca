@@ -87,7 +87,7 @@ bool confPessoa(Pessoas *, int &, int &, int);
 bool confEditora(Editoras *, int &, int &, int);
 bool confAutor(Autores *, int &, int &, int);
 bool confGenero(Generos *, int &, int &, int);
-void bscLivros(Livros *, int &, int &, int);
+bool confLivro(Livros *, int &, int &, int);
 
 void atualizarPessoa(Pessoas *, int &, Pessoas *, int &, Pessoas *, int &);
 void atualizarEditora(Editoras *, int &, Editoras *, int &, Editoras *, int &);
@@ -761,7 +761,7 @@ bool confEditora(Editoras *Editora, int &cod, int &pos, int cont)
     return false;
 }
 
-void bscLivros(Livros *Livro, int &cod, int &pos, int cont)
+bool confLivro(Livros *Livro, int &cod, int &pos, int cont)
 {
     int i = 0, f = cont;
     int m = (i + f) / 2;
@@ -777,10 +777,11 @@ void bscLivros(Livros *Livro, int &cod, int &pos, int cont)
     if (cod == Livro[m].codigo)
     {
         pos = m;
+        return true;
     }
     else
     {
-        cout << "Livro não encontrado!\n";
+        return false;
     }
 }
 
@@ -1057,36 +1058,42 @@ void emprestimoLivros(Livros *Livro, int &contL, Pessoas *Pessoa, int contPA)
     cout << "Digite o código do livro que deseja: ";
     cin >> codL;
     cin.ignore();
-    bscLivros(Livro, codL, posL, contL);
-    imprimirLivro(Livro, posL);
-
-    if (Livro[posL].codPessoa == 0)
+    if (confLivro(Livro, codL, posL, contL))
     {
-        cout << "Digite o código da pessoa que irá receber o livro: ";
-        cin >> codPes;
-        if (confPessoa(Pessoa, codPes, posPes, contPA))
+        imprimirLivro(Livro, posL);
+
+        if (Livro[posL].codPessoa == 0)
         {
-            cout << "Nome: " << Pessoa[posPes].nome << endl;
-            Livro[posL].codPessoa = Pessoa[posPes].codigo;
-            strcpy(Livro[posL].pessoa, Pessoa[posPes].nome);
-            Livro[posL].qtde_emprestado++;
-            cout << "Digite a data que o livro está sendo emprestado: \n";
-            lerData(Livro[posL].data_ultemprestimo);
-            cout << "A data de entrega prevista é: " << Livro[posL].data_ultemprestimo.dia << "/"
-                                                     << Livro[posL].data_ultemprestimo.mes << "/"
-                                                     << Livro[posL].data_ultemprestimo.ano << "\n\n";
+            cout << "Digite o código da pessoa que irá receber o livro: ";
+            cin >> codPes;
+            if (confPessoa(Pessoa, codPes, posPes, contPA))
+            {
+                cout << "Nome: " << Pessoa[posPes].nome << endl;
+                Livro[posL].codPessoa = Pessoa[posPes].codigo;
+                strcpy(Livro[posL].pessoa, Pessoa[posPes].nome);
+                Livro[posL].qtde_emprestado++;
+                cout << "Digite a data que o livro está sendo emprestado: \n";
+                lerData(Livro[posL].data_ultemprestimo);
+                cout << "A data de entrega prevista é: " << Livro[posL].data_ultemprestimo.dia << "/"
+                     << Livro[posL].data_ultemprestimo.mes << "/"
+                     << Livro[posL].data_ultemprestimo.ano << "\n\n";
+            }
+            else
+            {
+                cout << "Pessoa não encontrada!\n";
+            }
         }
         else
         {
-            cout << "Pessoa não encontrada!\n";
+            cout << "O livro não está disponível para empréstimo no momento\n";
+            cout << "Estará disponível em: " << Livro[posL].data_ultemprestimo.dia << "/"
+                 << Livro[posL].data_ultemprestimo.mes << "/"
+                 << Livro[posL].data_ultemprestimo.ano << "\n\n";
         }
     }
     else
     {
-        cout << "O livro não está disponível para empréstimo no momento\n";
-        cout << "Estará disponível em: " << Livro[posL].data_ultemprestimo.dia << "/"
-                                         << Livro[posL].data_ultemprestimo.mes << "/"
-                                         << Livro[posL].data_ultemprestimo.ano << "\n\n";
+        cout << "Livro não encontrado!\n\n";
     }
     system("pause");
 }
@@ -1101,39 +1108,45 @@ void devolucaoLivros(Livros *Livro, int &contL)
     cout << "Digite o código do livro que deseja devolver: ";
     cin >> codL;
     cin.ignore();
-    bscLivros(Livro, codL, posL, contL);
-    cout << "Título: " << Livro[posL].nome << endl;
-    cout << "Editora: " << Livro[posL].editora << endl;
-    cout << "Autor: " << Livro[posL].autor << endl;
-
-    if (Livro[posL].codPessoa != 0)
+    if (confLivro(Livro, codL, posL, contL))
     {
-        while (op != '0')
-        {
-            cout << "O livro está com: " << Livro[posL].pessoa << endl;
-            cout << "Deseja seguir com a devolução? (S/N)";
-            cin >> op;
-            op = toupper(op);
-            switch (op)
-            {
-            case 'S':
-                Livro[posL].codPessoa = 0;
-                strcpy(Livro[posL].pessoa, " ");
-                cout << "Livro devolvido com sucesso!\n\n";
-                op = '0';
-                break;
-            case 'N':
-                op = '0';
-                break;
+        cout << "Título: " << Livro[posL].nome << endl;
+        cout << "Editora: " << Livro[posL].editora << endl;
+        cout << "Autor: " << Livro[posL].autor << endl;
 
-            default:
-                break;
+        if (Livro[posL].codPessoa != 0)
+        {
+            while (op != '0')
+            {
+                cout << "O livro está com: " << Livro[posL].pessoa << endl;
+                cout << "Deseja seguir com a devolução? (S/N)";
+                cin >> op;
+                op = toupper(op);
+                switch (op)
+                {
+                case 'S':
+                    Livro[posL].codPessoa = 0;
+                    strcpy(Livro[posL].pessoa, " ");
+                    cout << "Livro devolvido com sucesso!\n\n";
+                    op = '0';
+                    break;
+                case 'N':
+                    op = '0';
+                    break;
+
+                default:
+                    break;
+                }
             }
+        }
+        else
+        {
+            cout << "O livro não está emprestado!\n";
         }
     }
     else
     {
-        cout << "O livro não está emprestado!\n";
+        cout << "Livro não encontrado!\n\n";
     }
     system("pause");
 }
@@ -1245,10 +1258,6 @@ void livrosAtrasados(Livros *Livro, int &contL)
             {
                 cout << "Não tem nenhum livro em atraso no momento!\n\n";
             }
-        }
-        else
-        {
-            cout << "Não tem nenhum livro em atraso no momento!\n\n";
         }
     }
     system("pause");
